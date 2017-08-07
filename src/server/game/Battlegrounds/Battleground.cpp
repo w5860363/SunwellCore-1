@@ -605,6 +605,8 @@ inline void Battleground::_ProcessLeave(uint32 diff)
     }
 }
 
+
+
 void Battleground::SetTeamStartLoc(TeamId teamId, float X, float Y, float Z, float O)
 {
     m_TeamStartLocX[teamId] = X;
@@ -666,29 +668,28 @@ void Battleground::RewardHonorToTeam(uint32 honor, TeamId teamId)
 
 void Battleground::RewardReputationToTeam(uint32 a_faction_id, uint32 h_faction_id, uint32 Reputation, uint32 TeamID)
 {
+
 	FactionEntry const* a_factionEntry = sFactionStore.LookupEntry(a_faction_id);
 	FactionEntry const* h_factionEntry = sFactionStore.LookupEntry(h_faction_id);
 
-	if (!a_factionEntry || !h_factionEntry)
+		if (!a_factionEntry || !h_factionEntry)
 		return;
-		for (BattlegroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
-		{
-			if (itr->second.OfflineRemoveTime)
-				continue;
 
-			Player* plr = ObjectAccessor::FindPlayer(itr->first);
-
+	for (BattlegroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
+	{
+		Player* plr = ObjectAccessor::FindPlayer(itr->first);
+		
 			if (!plr)
-			{
+			 {
 				sLog->outDebug(LOG_FILTER_BATTLEGROUND, "BattleGround:RewardReputationToTeam: %u not found!", itr->first);
-				continue;
+			continue;
 			}
-
+		
 			uint32 team = plr->GetTeamId();
-
+			
 			if (team == TeamID)
-				plr->GetReputationMgr().ModifyReputation(plr->GetCFSTeamId() == ALLIANCE ? a_factionEntry : h_factionEntry, Reputation);
-		}
+			plr->GetReputationMgr().ModifyReputation(plr->GetCFSTeamId() == ALLIANCE ? a_factionEntry : h_factionEntry, Reputation);
+	}
 }
 
 void Battleground::UpdateWorldState(uint32 Field, uint32 Value)
@@ -1066,12 +1067,12 @@ void Battleground::RemovePlayerAtLeave(Player* player)
 			if (GetStatus() == STATUS_IN_PROGRESS || GetStatus() == STATUS_WAIT_JOIN)
 				player->ScheduleDelayedOperation(DELAYED_SPELL_CAST_DESERTER);
 	}
+	
+	// Crossfaction bg
+	player->FitPlayerInTeam(false, this);
 
 	// Remove shapeshift auras
 	player->RemoveAurasByType(SPELL_AURA_MOD_SHAPESHIFT);
-
-	// Crossfaction bg
-	// player->FitPlayerInTeam(false, this);
 
 	player->mFake_team = TEAM_NEUTRAL;
 	teamId = player->GetCFSTeamId();
@@ -1168,7 +1169,7 @@ void Battleground::AddPlayer(Player* player)
 	// Add to list/maps
 	m_Players[guid] = player;
 
-	UpdatePlayersCountByTeam(player->GetTeamId(), false);                  // +1 player
+	UpdatePlayersCountByTeam(teamId, false); // +1 player
 
 	WorldPacket data;
 	sBattlegroundMgr->BuildPlayerJoinedBattlegroundPacket(&data, player);
@@ -1180,7 +1181,7 @@ void Battleground::AddPlayer(Player* player)
 	if (isArena())
 	{
 		player->RemoveArenaEnchantments(TEMP_ENCHANTMENT_SLOT);
-		if (player->GetTeamId() == TEAM_ALLIANCE)                                // gold
+		if (teamId == TEAM_ALLIANCE) // gold
 		{
 			if (player->GetTeamId() == TEAM_HORDE)
 				player->CastSpell(player, SPELL_HORDE_GOLD_FLAG, true);
@@ -1223,7 +1224,7 @@ void Battleground::AddPlayer(Player* player)
 	AddOrSetPlayerToCorrectBgGroup(player, teamId);
 
 	// Crossfaction bg
-	//player->FitPlayerInTeam(true, this);
+	player->FitPlayerInTeam(true, this);
 
 	// Log
 	;//sLog->outDetail("BATTLEGROUND: Player %s joined the battle.", player->GetName().c_str());
@@ -1774,7 +1775,7 @@ void Battleground::HandleKillPlayer(Player* victim, Player* killer)
             if (creditedPlayer == killer)
                 continue;
 
-            if (creditedPlayer->GetTeamId() == killer->GetTeamId() && (creditedPlayer == killer || creditedPlayer->IsAtGroupRewardDistance(victim)))
+            if (creditedPlayer->GetBgTeamId() == killer->GetBgTeamId() && (creditedPlayer == killer || creditedPlayer->IsAtGroupRewardDistance(victim)))
                 UpdatePlayerScore(creditedPlayer, SCORE_HONORABLE_KILLS, 1);
         }
     }
