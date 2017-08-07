@@ -622,7 +622,7 @@ void Battleground::SendPacketToAll(WorldPacket* packet)
 void Battleground::SendPacketToTeam(TeamId teamId, WorldPacket* packet, Player* sender, bool self)
 {
     for (BattlegroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
-		if (itr->second->GetTeamId() == teamId && (self || sender != itr->second))
+        if (itr->second->GetBgTeamId() == teamId && (self || sender != itr->second))
             itr->second->GetSession()->SendPacket(packet);
 }
 
@@ -636,14 +636,14 @@ void Battleground::PlaySoundToAll(uint32 soundID)
 void Battleground::CastSpellOnTeam(uint32 spellId, TeamId teamId)
 {
     for (BattlegroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
-        if (itr->second->GetTeamId() == teamId)
+        if (itr->second->GetBgTeamId() == teamId)
             itr->second->CastSpell(itr->second, spellId, true);
 }
 
 void Battleground::RemoveAuraOnTeam(uint32 spellId, TeamId teamId)
 {
     for (BattlegroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
-        if (itr->second->GetTeamId() == teamId)
+        if (itr->second->GetBgTeamId() == teamId)
             itr->second->RemoveAura(spellId);
 }
 
@@ -660,26 +660,34 @@ void Battleground::YellToAll(Creature* creature, char const* text, uint32 langua
 void Battleground::RewardHonorToTeam(uint32 honor, TeamId teamId)
 {
     for (BattlegroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
-        if (itr->second->GetTeamId() == teamId)
+        if (itr->second->GetBgTeamId() == teamId)
             UpdatePlayerScore(itr->second, SCORE_BONUS_HONOR, honor);
 }
 
 void Battleground::RewardReputationToTeam(uint32 a_faction_id, uint32 h_faction_id, uint32 Reputation, uint32 TeamID)
 {
-    FactionEntry const* a_factionEntry = sFactionStore.LookupEntry(a_faction_id);
-    FactionEntry const* h_factionEntry = sFactionStore.LookupEntry(h_faction_id);
-	if (a_factionEntry && h_factionEntry)
+	FactionEntry const* a_factionEntry = sFactionStore.LookupEntry(a_faction_id);
+	FactionEntry const* h_factionEntry = sFactionStore.LookupEntry(h_faction_id);
+
+	if (!a_factionEntry || !h_factionEntry)
+		return;
 		for (BattlegroundPlayerMap::const_iterator itr = m_Players.begin(); itr != m_Players.end(); ++itr)
 		{
+			if (itr->second.OfflineRemoveTime)
+				continue;
+
 			Player* plr = ObjectAccessor::FindPlayer(itr->first);
 
 			if (!plr)
+			{
+				sLog->outDebug(LOG_FILTER_BATTLEGROUND, "BattleGround:RewardReputationToTeam: %u not found!", itr->first);
 				continue;
+			}
 
 			uint32 team = plr->GetTeamId();
 
 			if (team == TeamID)
-				plr->GetReputationMgr().ModifyReputation(plr->GetCFSTeamId() == TEAM_ALLIANCE ? a_factionEntry : h_factionEntry, Reputation);
+				plr->GetReputationMgr().ModifyReputation(plr->GetCFSTeamId() == ALLIANCE ? a_factionEntry : h_factionEntry, Reputation);
 		}
 }
 
