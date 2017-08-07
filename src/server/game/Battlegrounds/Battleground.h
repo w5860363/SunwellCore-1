@@ -368,27 +368,24 @@ class Battleground
         void SetMaxPlayersPerTeam(uint32 MaxPlayers) { m_MaxPlayersPerTeam = MaxPlayers; }
         void SetMinPlayersPerTeam(uint32 MinPlayers) { m_MinPlayersPerTeam = MinPlayers; }
 
-		void DecreaseInvitedCount(TeamId teamId)    
-        {
-            if (m_BgInvitedPlayers[teamId] > 0)
-				--m_BgInvitedPlayers[teamId]; 
-        }
-		void IncreaseInvitedCount(TeamId teamId)    { ++m_BgInvitedPlayers[teamId]; }
-		uint32 GetInvitedCount(TeamId teamId) const { return m_BgInvitedPlayers[teamId]; }
+	void DecreaseInvitedCount(TeamId teamId)    
+
+	void IncreaseInvitedCount(TeamId teamId)    { ++m_BgInvitedPlayers[teamId]; }
+	uint32 GetInvitedCount(TeamId teamId) const { return m_BgInvitedPlayers[teamId]; }
 
         bool HasFreeSlots() const;
         uint32 GetFreeSlotsForTeam(TeamId teamId) const;
-		uint32 GetMaxFreeSlots() const;
+	uint32 GetMaxFreeSlots() const;
  
         typedef std::set<Player*> SpectatorList;
-		typedef std::map<uint64, uint64> ToBeTeleportedMap;
+	typedef std::map<uint64, uint64> ToBeTeleportedMap;
         void AddSpectator(Player* p) { m_Spectators.insert(p); }
         void RemoveSpectator(Player* p) { m_Spectators.erase(p); }
         bool HaveSpectators() { return !m_Spectators.empty(); }
-		const SpectatorList& GetSpectators() const { return m_Spectators; }
-		void AddToBeTeleported(uint64 spectator, uint64 participant) { m_ToBeTeleported[spectator] = participant; }
-		void RemoveToBeTeleported(uint64 spectator) { ToBeTeleportedMap::iterator itr = m_ToBeTeleported.find(spectator); if (itr != m_ToBeTeleported.end()) m_ToBeTeleported.erase(itr); }
-		void SpectatorsSendPacket(WorldPacket& data);
+	const SpectatorList& GetSpectators() const { return m_Spectators; }
+	void AddToBeTeleported(uint64 spectator, uint64 participant) { m_ToBeTeleported[spectator] = participant; }
+	void RemoveToBeTeleported(uint64 spectator) { ToBeTeleportedMap::iterator itr = m_ToBeTeleported.find(spectator); if (itr != m_ToBeTeleported.end()) m_ToBeTeleported.erase(itr); }
+	void SpectatorsSendPacket(WorldPacket& data);
 
         bool isArena() const        { return m_IsArena; }
         bool isBattleground() const { return !m_IsArena; }
@@ -398,8 +395,8 @@ class Battleground
         BattlegroundPlayerMap const& GetPlayers() const { return m_Players; }
         uint32 GetPlayersSize() const { return m_Players.size(); }
 
-		void ReadyMarkerClicked(Player* p); // pussywizard
-		std::set<uint32> readyMarkerClickedSet; // pussywizard
+	void ReadyMarkerClicked(Player* p); // pussywizard
+	std::set<uint32> readyMarkerClickedSet; // pussywizard
 
         typedef std::map<uint64, BattlegroundScore*> BattlegroundScoreMap;
         typedef std::map<uint64, ArenaLogEntryData> ArenaLogEntryDataMap;// pussywizard
