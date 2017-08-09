@@ -3281,12 +3281,12 @@ CrossFactionSystem.Battlegrounds = 1
 #
 ###################################################################################################
 #
-#    Channel.CityOnlyFlag
-#        Description: Management for channels with flag CHANNEL_DBC_FLAG_CITY_ONLY.
-#        Default:    1 - (Enabled, Channels with flag CHANNEL_DBC_FLAG_CITY_ONLY will be activated in the cities only (blizzlike))
-#                    0 - (Disabled, Channels with flag CHANNEL_DBC_FLAG_CITY_ONLY will connected at any place)
+# CROSSFACTION BG CONFIG
+#
+#    CrossfactionBG.enable = 1 - Mixed battleground enabled.
+#    CrossfactionBG.enable = 0 - Mixed battleground disabled.
 
-Channel.CityOnlyFlag = 1
+CrossfactionBG.enable = 1
 
 #
 ###################################################################################################
