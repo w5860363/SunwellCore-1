@@ -2,7 +2,8 @@
  * Copyright (C) 
  * Copyright (C) 
  *
- * This program is free software; you can redistribute it and/or modify it
+ * This program is free software; you can redistribute it and/or mo
+ dify it
  * under the terms of the GNU General Public License as published by the
  * Free Software Foundation; either version 2 of the License, or (at your
  * option) any later version.
@@ -33,23 +34,24 @@
 
 void WorldSession::SendNameQueryOpcode(uint64 guid)
 {
-	GlobalPlayerData const* playerData = sWorld->GetGlobalPlayerData(GUID_LOPART(guid));
+    Player* player = ObjectAccessor::FindPlayerInOrOutOfWorld(guid);
+    GlobalPlayerData const* nameData = sWorld->GetGlobalPlayerData(GUID_LOPART(guid));
 
     WorldPacket data(SMSG_NAME_QUERY_RESPONSE, (8+1+1+1+1+1+10));
     data.appendPackGUID(guid);
-    if (!playerData)
+    if (!nameData)
     {
         data << uint8(1);                           // name unknown
         SendPacket(&data);
         return;
     }
 
-    data << uint8(0);                               // name known
-    data << playerData->name;                       // played name
-    data << uint8(0);                               // realm name - only set for cross realm interaction (such as Battlegrounds)
-    data << uint8(player ? player->getRace() :playerData->race);
-    data << uint8(playerData->gender);
-    data << uint8(playerData->playerClass);
+    data << uint8(0);                             // name known
+    data << nameData->name;                       // played name
+    data << uint8(0);                             // realm name - only set for cross realm interaction (such as Battlegrounds)
+    data << uint8(player ? player->getRace() : nameData->race);
+    data << uint8(nameData->gender);
+    data << uint8(nameData->playerClass);
 
     // pussywizard: optimization
     /*Player* player = ObjectAccessor::FindPlayerInOrOutOfWorld(guid);
