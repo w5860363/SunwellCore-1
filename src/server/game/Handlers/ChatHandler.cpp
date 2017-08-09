@@ -45,6 +45,18 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
 {
     uint32 type;
     uint32 lang;
+	
+    if (sWorld->getBoolConfig(CROSSFACTION_SYSTEM_BATTLEGROUNDS) && lang != LANG_ADDON)
+    {
+        switch (type)
+        {
+        case CHAT_MSG_BATTLEGROUND:
+        case CHAT_MSG_BATTLEGROUND_LEADER:
+		lang = LANG_UNIVERSAL;
+        default:
+		break;
+        }
+    }
 
     recvData >> type;
     recvData >> lang;
@@ -325,11 +337,7 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
                 SendNotification(GetTrinityString(LANG_SAY_REQ), sWorld->getIntConfig(CONFIG_CHAT_SAY_LEVEL_REQ));
                 return;
             }
-			
-            if (!GetPlayer()->IsGameMaster())
-                 if (GetPlayer()->SendBattleGroundChat(type, msg))
-                 return;
-
+		
             if (type == CHAT_MSG_SAY)
                 sender->Say(msg, lang);
             else if (type == CHAT_MSG_EMOTE)
