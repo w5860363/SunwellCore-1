@@ -1058,18 +1058,16 @@ void World::LoadConfigSettings(bool reload)
     m_int_configs[CONFIG_ARENA_START_PERSONAL_RATING]                = sConfigMgr->GetIntDefault ("Arena.ArenaStartPersonalRating", 1000);
     m_int_configs[CONFIG_ARENA_START_MATCHMAKER_RATING]              = sConfigMgr->GetIntDefault ("Arena.ArenaStartMatchmakerRating", 1500);
     m_bool_configs[CONFIG_ARENA_SEASON_IN_PROGRESS]                  = sConfigMgr->GetBoolDefault("Arena.ArenaSeason.InProgress", true);
-	m_bool_configs[CONFIG_ARENA_QUEUE_ANNOUNCER_ENABLE]              = sConfigMgr->GetBoolDefault("Arena.QueueAnnouncer.Enable", false);
+    m_bool_configs[CONFIG_ARENA_QUEUE_ANNOUNCER_ENABLE]              = sConfigMgr->GetBoolDefault("Arena.QueueAnnouncer.Enable", false);
 
-	// Management for channels with flag CHANNEL_DBC_FLAG_CITY_ONLY
-	m_bool_configs[CONFIG_CHANNEL_ON_CITY_ONLY_FLAG]                 = sConfigMgr->GetBoolDefault("Channel.CityOnlyFlag", true);
+    // Management for channels with flag CHANNEL_DBC_FLAG_CITY_ONLY
+    m_bool_configs[CONFIG_CHANNEL_ON_CITY_ONLY_FLAG]                 = sConfigMgr->GetBoolDefault("Channel.CityOnlyFlag", true);
 
     m_bool_configs[CONFIG_OFFHAND_CHECK_AT_SPELL_UNLEARN]            = sConfigMgr->GetBoolDefault("OffhandCheckAtSpellUnlearn", true);
 	
-    m_bool_configs[CROSSFACTION_SYSTEM_BATTLEGROUNDS]                = sConfigMgr->GetBoolDefault("CrossFactionSystem.Battlegrounds", true);
+    m_bool_configs[CONFIG_BAN_PLAYER]                                = sConfigMgr->GetIntDefault("Anticheat.Ban", true);
 
-	m_bool_configs[CONFIG_BAN_PLAYER]                                = sConfigMgr->GetIntDefault("Anticheat.Ban", true);
-
-
+    m_bool_configs[BATTLEGROUND_CROSSFACTION_ENABLED]		     = sConfigMgr->GetBoolDefault("CrossfactionBG.enable", true);
     if (int32 clientCacheId = sConfigMgr->GetIntDefault("ClientCacheVersion", 0))
     {
         // overwrite DB/old value
