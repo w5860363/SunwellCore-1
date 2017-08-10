@@ -68,7 +68,7 @@ void Player::SetFakeRaceAndMorph()
 {
        if (getClass() == CLASS_DRUID)
        {
-               if (GetCFSTeamId() == TEAM_ALLIANCE)
+               if (GetOTeam() == TEAM_ALLIANCE)
                {
                        m_FakeMorph = getGender() == GENDER_MALE ? FAKE_M_TAUREN : FAKE_F_TAUREN;
                        m_FakeRace = RACE_TAUREN;
@@ -79,7 +79,7 @@ void Player::SetFakeRaceAndMorph()
                        m_FakeRace = RACE_NIGHTELF;
                }
                else
-                       m_FakeRace = GetCFSTeamId() == TEAM_ALLIANCE ? RACE_BLOODELF : RACE_HUMAN;
+                       m_FakeRace = GetOTeam() == TEAM_ALLIANCE ? RACE_BLOODELF : RACE_HUMAN;
        }
        else if (getClass() == CLASS_SHAMAN && GetCFSTeamId() == TEAM_HORDE && getGender() == GENDER_FEMALE)
        {
@@ -88,9 +88,9 @@ void Player::SetFakeRaceAndMorph()
        }
        else
        {
-               m_FakeRace = GetCFSTeamId() == TEAM_ALLIANCE ? RACE_BLOODELF : RACE_HUMAN;
+               m_FakeRace = GetOTeam() == TEAM_ALLIANCE ? RACE_BLOODELF : RACE_HUMAN;
 
-               if (GetCFSTeamId() == TEAM_HORDE)
+               if (GetOTeam() == TEAM_HORDE)
                {
                        if (getGender() == GENDER_MALE)
                                m_FakeMorph = 19723;
