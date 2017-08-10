@@ -9347,11 +9347,11 @@ bool Unit::Attack(Unit* victim, bool meleeAttack)
             return false;
     }
 
-	if (!victim->IsValidAttackTarget(this))
-		return false;
-	
     // Unit with SPELL_AURA_SPIRIT_OF_REDEMPTION can not attack
     if (HasAuraType(SPELL_AURA_SPIRIT_OF_REDEMPTION))
+        return false;
+	
+    if (!victim->IsValidAttackTarget(this))
         return false;
 
     // remove SPELL_AURA_MOD_UNATTACKABLE at attack (in case non-interruptible spells stun aura applied also that not let attack)
@@ -17146,7 +17146,7 @@ void Unit::RemoveCharmedBy(Unit* charmer)
 void Unit::RestoreFaction()
 { 
     if (GetTypeId() == TYPEID_PLAYER)
-        ToPlayer()->setFactionForRace(getRace());
+        ToPlayer()->setFactionForRace(ToPlayer()->getRace());
     else
     {
         if (HasUnitTypeMask(UNIT_MASK_MINION))
