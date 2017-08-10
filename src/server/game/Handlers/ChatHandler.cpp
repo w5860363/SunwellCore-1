@@ -46,7 +46,10 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
     uint32 type;
     uint32 lang;
 	
-    if (sWorld->getBoolConfig(CROSSFACTION_SYSTEM_BATTLEGROUNDS) && lang != LANG_ADDON)
+    recvData >> type;
+    recvData >> lang;
+	
+    if (sWorld->getBoolConfig(BATTLEGROUND_CROSSFACTION_ENABLED) && lang != LANG_ADDON)
     {
         switch (type)
         {
@@ -57,9 +60,6 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
 		break;
         }
     }
-
-    recvData >> type;
-    recvData >> lang;
 
     if (type >= MAX_CHAT_MSG_TYPE)
     {
@@ -341,7 +341,6 @@ void WorldSession::HandleMessagechatOpcode(WorldPacket & recvData)
             if (!GetPlayer()->IsGameMaster())  
                 if (GetPlayer()->SendBattleGroundChat(type, msg))  
                     return;  
-		
 		
             if (type == CHAT_MSG_SAY)
                 sender->Say(msg, lang);
